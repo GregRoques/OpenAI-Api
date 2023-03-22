@@ -1,0 +1,18 @@
+{
+    "name": "Open AI API",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "type":"module",
+    "license": "ISC",
+    "dependencies": {
+      "cors": "^2.8.5",
+      "express": "^4.17.2",
+      "helmet": "^4.6.0",
+      "openai": "^3.2.1"
+    }
+  }
