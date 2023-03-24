@@ -1,5 +1,6 @@
 const chatGPT = document.getElementById('chatGPT');
 const prompt = document.getElementById('prompt');
+const promptType = document.getElementById('GPTselection');
 const answer = document.getElementById('answer');
 
 let noSubmit = false;
@@ -17,6 +18,9 @@ chatGPT.addEventListener("submit", e=>{
     }
     noSubmit = true;
     prompt.readOnly = true;
+    promptType.disabled = true;
+
+    answer.innerHTML = "";
     answer.innerText = "Thinking...";
 
     const url = "http://localhost:2000/"
@@ -25,18 +29,45 @@ chatGPT.addEventListener("submit", e=>{
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({value: prompt.value})
+        body: JSON.stringify({
+            request: prompt.value,
+            request_type: promptType.value
+        })
     }
 
     fetch(url,params )
     .then((res) => res.json())
     .then((data) => {
-        answer.innerText = `${prompt.value}\n\n`;
+        answer.innerText= "";
         if(cancelTimeOuts) cancelTimeOuts = false;
-        displayResponse(data)
+        const originalPrompt = prompt.value;
+        if(promptType.value == "image"){
+
+            const a = document.createElement('a'); 
+            a.href = data;
+            a.target = "_blank";
+
+            const img = new Image();
+            img.setAttribute("data-src", '')
+            img.src = data;
+            img.width=200;
+            img.height=200;
+            img.alt = "OpenAI Generated Image"
+            img.title = originalPrompt;
+            img.onload = (()=>{
+                setTimeout(()=>{
+                    img.classList.add("imgLoaded")
+                },1000)
+            })();
+            a.appendChild(img)
+            answer.appendChild(a)
+        }else{
+            answer.innerText = originalPrompt + "\n\n";
+            displayResponse(data)
+        }
     })
     .catch(e=>{
-        answer.innerText = `Error: ${e.toUpperCase()}`
+        answer.innerText = `Error: ${e}`
     })
     .finally(()=>{
         clearPrompt()
@@ -46,6 +77,7 @@ chatGPT.addEventListener("submit", e=>{
 function clearPrompt(){
     noSubmit = false;
     prompt.readOnly = false;
+    promptType.disabled = false;
     prompt.placeholder = "Enter another question/prompt?";
     prompt.value="";
 }
