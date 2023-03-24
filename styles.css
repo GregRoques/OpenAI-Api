@@ -1,0 +1,8 @@
+body{
+    margin:1rem;
+}
+
+pre{
+    max-width: 100%;
+    white-space: pre-wrap;
+}
