@@ -54,13 +54,16 @@ chatGPT.addEventListener("submit", e=>{
             img.height=200;
             img.alt = "OpenAI Generated Image"
             img.title = originalPrompt;
-            img.onload = (()=>{
-                setTimeout(()=>{
-                    img.classList.add("imgLoaded")
-                },1000)
-            })();
             a.appendChild(img)
             answer.appendChild(a)
+
+            if(img.complete){
+                img.classList.add("imgLoaded")
+            } else {
+                img.addEventListener('load',()=> {
+                    img.classList.add("imgLoaded")
+                })
+            }
         }else{
             answer.innerText = originalPrompt + "\n\n";
             displayResponse(data)
